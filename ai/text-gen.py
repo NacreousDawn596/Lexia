@@ -2,6 +2,7 @@ import disnake
 from disnake.ext import commands
 import re
 from g4f.client import Client
+import textwrap
 
 class TextGen(commands.Cog):
     def __init__(self, bot):
@@ -84,13 +85,24 @@ class TextGen(commands.Cog):
     async def textgen_text(self, ctx, *, message: str):
         async with ctx.channel.typing():
             response = await self.generate_response(ctx.channel.id, ctx.author.id, ctx.author.name, message)
-            await ctx.reply(response)
+            chunks = textwrap.wrap(response, 2000)
+            for i, chunk in enumerate(chunks):
+                if i == 0:
+                    await ctx.reply(chunk)
+                else:
+                    await ctx.channel.send(chunk)
 
     @commands.slash_command(name="textgen", description="chat with a kawaii bot :3")
     async def textgen(self, inter: disnake.CommandInteraction, message: str):
         await inter.response.defer()
         response = await self.generate_response(inter.channel_id, inter.author.id, inter.author.name, message)
-        await inter.followup.send(response)
+        # await inter.followup.send(response)
+        chunks = textwrap.wrap(response, 2000)
+        for i, chunk in enumerate(chunks):
+            if i == 0:
+                await inter.followup.send(chunk)
+            else:
+                await inter.channel.send(chunk)
         
     @commands.slash_command(name="textreset", description="Reset the conversation history")
     async def reset(self, inter: disnake.CommandInteraction):

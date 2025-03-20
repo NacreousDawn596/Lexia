@@ -8,3 +8,6 @@ user_memory.db
 .env
 __pycache__
 har_and_cookies
+bin
+economy.json
+user_memory.db
