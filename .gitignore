@@ -1,0 +1,10 @@
+token.txt
+include
+lib
+lib64
+share
+test*
+user_memory.db
+.env
+__pycache__
+har_and_cookies
