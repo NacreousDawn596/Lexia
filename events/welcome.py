@@ -62,7 +62,7 @@ class Welcome(commands.Cog):
         
         embed.set_thumbnail(url=member.display_avatar.url)
 
-        welcome_channel = guild.get_channel(1353008923174768650) 
+        welcome_channel = guild.get_channel(1353035636524974170) 
         if welcome_channel:
             await welcome_channel.send(embed=embed)
 
@@ -80,7 +80,7 @@ class Welcome(commands.Cog):
         )
         embed.set_thumbnail(url=member.display_avatar.url) 
 
-        goodbye_channel = guild.get_channel(1353008926140141620) 
+        goodbye_channel = guild.get_channel(1353035639372906506) 
         if goodbye_channel:
             await goodbye_channel.send(embed=embed)
 
