@@ -65,7 +65,7 @@ Explore Lexia Bot's wide range of commands, designed to bring fun, utility, and 
 
 Need help or have feedback? We're here for you!  
 - Report issues or suggest features via [GitHub Issues](https://github.com/Nacreousdawn596/Lexia/issues).  
-- Join our [Support Server](https://discord.gg/your-support-server) for real-time assistance.
+- Join our [Support Server](https://discord.gg/fuQgEpDdyF) for real-time assistance.
 
 ---
 
