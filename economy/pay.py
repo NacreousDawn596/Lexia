@@ -1,12 +1,10 @@
 # pay.py
 import disnake
 from disnake.ext import commands
-from economy import Economy
 
 class Pay(commands.Cog):
-    def __init__(self, bot: commands.Bot, economy: Economy):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.economy = economy
 
     @commands.slash_command(name="pay", description="Send coins to another user")
     async def pay_slash(
@@ -36,14 +34,14 @@ class Pay(commands.Cog):
             msg = "You can't pay yourself!"
             return await ctx.response.send_message(msg, ephemeral=True) if is_slash else await ctx.send(msg)
 
-        sender_balance = self.economy.get_user_balance(ctx.guild.id, ctx.author.id)
+        sender_balance = self.bot.economy.get_user_balance(ctx.guild.id, ctx.author.id)
         
         if sender_balance < amount:
             msg = f"You don't have enough coins! Your balance: {sender_balance}"
             return await ctx.response.send_message(msg, ephemeral=True) if is_slash else await ctx.send(msg)
 
-        self.economy.add_coins_to_user(ctx.guild.id, ctx.author.id, -amount)
-        self.economy.add_coins_to_user(ctx.guild.id, user.id, amount)
+        self.bot.economy.add_coins_to_user(ctx.guild.id, ctx.author.id, -amount)
+        self.bot.economy.add_coins_to_user(ctx.guild.id, user.id, amount)
 
         embed = disnake.Embed(
             title="💸 Payment Successful",
@@ -58,7 +56,7 @@ class Pay(commands.Cog):
             name="New Balances",
             value=(
                 f"{ctx.author.display_name}: `{sender_balance - amount}`\n"
-                f"{user.display_name}: `{self.economy.get_user_balance(ctx.guild.id, user.id)}`"
+                f"{user.display_name}: `{self.bot.economy.get_user_balance(ctx.guild.id, user.id)}`"
             ),
             inline=False
         )
@@ -90,4 +88,4 @@ class Pay(commands.Cog):
             await ctx.send(msg)
 
 def setup(bot: commands.Bot):
-    bot.add_cog(Pay(bot, bot.economy))
+    bot.add_cog(Pay(bot))
