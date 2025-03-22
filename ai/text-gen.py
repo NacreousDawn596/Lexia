@@ -27,20 +27,30 @@ class TextGen(commands.Cog):
         }
         
     def get_user_memory(self, user_id: int):
-        self.bot.cursor.execute("SELECT name, info FROM user_memory WHERE user_id = ?", (user_id,))
-        result = self.bot.cursor.fetchone()
-        return {"name": result[0], "info": result[1]} if result else {}
-    
+        try:
+            self.bot.cursor.execute("SELECT name, info FROM user_memory WHERE user_id = ?", (user_id,))
+            result = self.bot.cursor.fetchone()
+            return {"name": result[0], "info": result[1]} if result else {}
+        except Exception as e:
+            print(f"Error fetching user memory: {e}")
+            return {}
+
     def save_user_memory(self, user_id: int, name: str, info: str):
-        self.bot.cursor.execute("""
-            INSERT INTO user_memory (user_id, name, info) VALUES (?, ?, ?)
-            ON CONFLICT(user_id) DO UPDATE SET name = ?, info = ?
-        """, (user_id, name, info, name, info))
-        self.bot.conn.commit()
+        try:
+            self.bot.cursor.execute("""
+                INSERT INTO user_memory (user_id, name, info) VALUES (?, ?, ?)
+                ON CONFLICT(user_id) DO UPDATE SET name = ?, info = ?
+            """, (user_id, name, info, name, info))
+            self.bot.conn.commit()
+        except Exception as e:
+            print(f"Error saving user memory: {e}")
 
     def delete_user_memory(self, user_id: int):
-        self.bot.cursor.execute("DELETE FROM user_memory WHERE user_id = ?", (user_id,))
-        self.bot.conn.commit()
+        try:
+            self.bot.cursor.execute("DELETE FROM user_memory WHERE user_id = ?", (user_id,))
+            self.bot.conn.commit()
+        except Exception as e:
+            print(f"Error deleting user memory: {e}")
 
     async def generate_response(self, channel_id: int, user_id: int, user_name: str, user_message: str):
         channel_context = self.bot.channel_conversations.get(channel_id, [self.system_message.copy()])
@@ -56,13 +66,17 @@ class TextGen(commands.Cog):
         if user_memory:
             channel_context.append({"role": "system", "content": f"{user_name}'s personal info: {user_memory['info']}"})
 
-        response = self.gpt_client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=channel_context,
-            web_search=False
-        )
+        try:
+            response = self.gpt_client.chat.completions.create(
+                model="gpt-4",  # Use a valid model name
+                messages=channel_context,
+                web_search=False
+            )
+            ai_response = response.choices[0].message.content.strip().replace("\\n", "\n")
+        except Exception as e:
+            print(f"Error generating response: {e}")
+            ai_response = "Sorry, I couldn't generate a response. Please try again later."
 
-        ai_response = response.choices[0].message.content
         channel_context.append({"role": "assistant", "content": ai_response})
         self.bot.channel_conversations[channel_id] = channel_context
 
@@ -85,7 +99,8 @@ class TextGen(commands.Cog):
     async def textgen_text(self, ctx, *, message: str):
         async with ctx.channel.typing():
             response = await self.generate_response(ctx.channel.id, ctx.author.id, ctx.author.name, message)
-            chunks = textwrap.wrap(response, 2000)
+            chunks = [response[i:i+2000] for i in range(0, len(response), 2000)]
+            
             for i, chunk in enumerate(chunks):
                 if i == 0:
                     await ctx.reply(chunk)
@@ -95,9 +110,9 @@ class TextGen(commands.Cog):
     @commands.slash_command(name="textgen", description="chat with a kawaii bot :3")
     async def textgen(self, inter: disnake.CommandInteraction, message: str):
         await inter.response.defer()
-        response = await self.generate_response(inter.channel_id, inter.author.id, inter.author.name, message)
-        # await inter.followup.send(response)
-        chunks = textwrap.wrap(response, 2000)
+        response = await self.generate_response(inter.channel.id, inter.author.id, inter.author.name, message)        
+        chunks = [response[i:i+2000] for i in range(0, len(response), 2000)]
+        
         for i, chunk in enumerate(chunks):
             if i == 0:
                 await inter.followup.send(chunk)
@@ -106,7 +121,7 @@ class TextGen(commands.Cog):
         
     @commands.slash_command(name="textreset", description="Reset the conversation history")
     async def reset(self, inter: disnake.CommandInteraction):
-        self.self.bot.channel_conversations.pop(inter.channel_id, None)
+        self.bot.channel_conversations.pop(inter.channel_id, None)
         await inter.response.send_message("Conversation history cleared!", ephemeral=False)
         
     @commands.slash_command(name="reset_memory", description="Reset your personal information")
@@ -126,7 +141,7 @@ class TextGen(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.author == self.bot.user:
+        if message.author.bot or message.content.startswith(self.bot.command_prefix):
             return
 
         if message.reference and message.reference.resolved:
@@ -136,8 +151,8 @@ class TextGen(commands.Cog):
                     response = await self.generate_response(
                         message.channel.id, message.author.id, message.author.name, message.content
                     )
-                    # await message.reply(response)
-                    chunks = textwrap.wrap(response, 2000)
+                    chunks = [response[i:i+2000] for i in range(0, len(response), 2000)]
+                    
                     for i, chunk in enumerate(chunks):
                         if i == 0:
                             await message.reply(chunk)

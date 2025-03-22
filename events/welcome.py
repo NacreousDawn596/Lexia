@@ -46,17 +46,23 @@ class Welcome(commands.Cog):
     async def on_member_join(self, member: disnake.Member):
         guild = member.guild
         print(f"{member.name} joined {guild.name}!")
+        
+        if member.bot:
+            await member.add_roles(guild.get_role(1353035515330302065))
 
         welcome_message = await self.generate_welcome_message(member)
 
         embed = disnake.Embed(
             title=f"Welcome to the serverr!!!",
-            description= f"{member.mention()}, " + welcome_message,
+            description= f"{member.mention}, " + welcome_message,
             color=0xFFC0CB  
         )
+        
+        embed.set_image("https://cdn.discordapp.com/app-icons/1239202410971529266/41e505cffd3fd8b8f4a6af6544a6f9bf.png?size=1024")
+        
         embed.set_thumbnail(url=member.display_avatar.url)
 
-        welcome_channel = disnake.utils.get(guild.text_channels, name="┊୨🌸୧┊welcomeᝰᐟ") 
+        welcome_channel = guild.get_channel(1353008923174768650) 
         if welcome_channel:
             await welcome_channel.send(embed=embed)
 
@@ -74,7 +80,7 @@ class Welcome(commands.Cog):
         )
         embed.set_thumbnail(url=member.display_avatar.url) 
 
-        goodbye_channel = disnake.utils.get(guild.text_channels, name="┊•🍰┊goodbyeᝰᐟ") 
+        goodbye_channel = guild.get_channel(1353008926140141620) 
         if goodbye_channel:
             await goodbye_channel.send(embed=embed)
 

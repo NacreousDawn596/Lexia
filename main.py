@@ -8,7 +8,7 @@ intents = disnake.Intents.default()
 intents.message_content = True  
 intents.members = True
 
-bot = commands.Bot(command_prefix="l!", intents=intents, test_guilds=[1349503378119462912])
+bot = commands.Bot(command_prefix="l!", intents=intents, test_guilds=[1353007786971365407, 1349503378119462912])
 bot.channel_conversations = {}
 def setup_database():
     """Initialize the SQLite database for user memory."""
@@ -38,14 +38,14 @@ async def on_ready():
         "ai": [
             "image-gen", "text-gen"
         ],
-        # "events": [
-        #     "welcome"
-        # ],
+        "events": [
+            "welcome"
+        ],
         "economy": [
             "balance", "daily", "leaderboard", "message_listener", "gambling", "pay"
         ],
         "moderation": [
-            "ban", "clear", "kick", "mute", "clone"
+            "ban", "clear", "kick", "mute", "clone", "verify", "reactrole"
         ]
     }
     
