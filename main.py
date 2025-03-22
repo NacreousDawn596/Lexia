@@ -53,4 +53,7 @@ async def on_ready():
         for file in files[folder]:
             bot.load_extension(f"{folder}.{file}")
 
+    for guild in bot.guilds:
+        await bot.tree.sync(guild=disnake.Object(id=guild.id))
+        
 bot.run(os.environ["TOKEN"])
