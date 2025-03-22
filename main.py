@@ -55,6 +55,6 @@ async def on_ready():
         for file in files[folder]:
             bot.load_extension(f"{folder}.{file}")
 
-    # await bot.sync_application_commands()
+    await bot._sync_application_commands()
         
 bot.run(os.environ["TOKEN"])
