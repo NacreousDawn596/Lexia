@@ -1,12 +1,10 @@
 import disnake
 from disnake.ext import commands
 import time
-from .economy import Economy
 
 class MessageListenerCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.economy = Economy()
         self.message_cooldown = {}  # To track message cooldowns
 
     @commands.Cog.listener()
@@ -25,7 +23,7 @@ class MessageListenerCog(commands.Cog):
             return
 
         # Grant coins
-        self.economy.add_coins_to_user(guild_id, user_id, 10)  # Grant 10 coins per message
+        self.bot.economy.add_coins_to_user(guild_id, user_id, 10)  # Grant 10 coins per message
         self.message_cooldown[user_id] = now
 
 def setup(bot):

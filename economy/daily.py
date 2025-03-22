@@ -2,19 +2,17 @@ import disnake
 from disnake.ext import commands
 import time
 from datetime import datetime
-from .economy import Economy
 
 class DailyCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.economy = Economy()
 
     @commands.slash_command(name="daily", description="Claim your daily coins.")
     async def daily(self, inter: disnake.ApplicationCommandInteraction):
         """Claim daily coins."""
         guild_id = inter.guild.id
         user_id = inter.author.id
-        economy = self.economy.get_guild_economy(guild_id)
+        economy = self.bot.economy.get_guild_economy(guild_id)
 
         last_daily = economy.get(f"{user_id}_last_daily", 0)
         now = time.time()
@@ -29,8 +27,8 @@ class DailyCog(commands.Cog):
             return
 
         economy[f"{user_id}_last_daily"] = now
-        self.economy.add_coins_to_user(guild_id, user_id, 100)  # Grant 100 coins
-        balance = self.economy.get_user_balance(guild_id, user_id)
+        self.bot.economy.add_coins_to_user(guild_id, user_id, 100)  # Grant 100 coins
+        balance = self.bot.economy.get_user_balance(guild_id, user_id)
 
         embed = disnake.Embed(
             title="🎉 Daily Reward Claimed",

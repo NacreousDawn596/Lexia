@@ -2,6 +2,7 @@ import os
 import disnake
 from disnake.ext import commands
 import sqlite3
+from economy.economy import Economy
 
 intents = disnake.Intents.default()
 intents.message_content = True  
@@ -24,6 +25,7 @@ def setup_database():
 bot.setup_database = setup_database
 
 bot.setup_database()
+bot.economy = Economy()
 
 @bot.event
 async def on_ready():
@@ -40,7 +42,7 @@ async def on_ready():
         #     "welcome"
         # ],
         "economy": [
-            "balance", "daily", "leaderboard", "message_listener"
+            "balance", "daily", "leaderboard", "message_listener", "gambling", "pay"
         ]
     }
     

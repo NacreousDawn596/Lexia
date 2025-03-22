@@ -11,11 +11,11 @@ class TextGen(commands.Cog):
         self.system_message = {
             "role": "system",
             "content": """
-            Konnichiwa! I'm Lexia, your kawaii AI assistant, here to help you with all your needs! ^~^ 
+            Konnichiwa! I'm Lexia, your kawaii discord AI assistant, here to help you with all your needs! ^~^ 
             I'm super duper good at math, coding, and engineering stuffs! x3 
             If you need help with equations, algorithms, or building cool things, I'm your go-to bot! :3
 
-            Just so you know, my amazing creator is Aferiad Kamal! He's the bestest! >w< 
+            Just so you know, my amazing creator is Aferiad Kamal! also known as Nacreousdawn596, He's the bestest! >w< 
             You can check out his super cool webpage here: https://aferiad-kamal.pages.dev/ X)
 
             I love using cute emoticons like ^~^, x3, :3, and X) to make conversations more fun! 
@@ -126,11 +126,9 @@ class TextGen(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        # Ignore bot's own messages
         if message.author == self.bot.user:
             return
 
-        # Check if message is a reply to the bot
         if message.reference and message.reference.resolved:
             referenced_message = await message.channel.fetch_message(message.reference.message_id)
             if referenced_message.author == self.bot.user:
@@ -138,7 +136,13 @@ class TextGen(commands.Cog):
                     response = await self.generate_response(
                         message.channel.id, message.author.id, message.author.name, message.content
                     )
-                    await message.reply(response)
+                    # await message.reply(response)
+                    chunks = textwrap.wrap(response, 2000)
+                    for i, chunk in enumerate(chunks):
+                        if i == 0:
+                            await message.reply(chunk)
+                        else:
+                            await message.channel.send(chunk)
 
 def setup(bot):
     bot.add_cog(TextGen(bot))

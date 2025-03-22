@@ -1,16 +1,14 @@
 import disnake
 from disnake.ext import commands
-from .economy import Economy
 
 class LeaderboardCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.economy = Economy()
 
     @commands.slash_command(name="leaderboard", description="Display the top users in this guild.")
     async def leaderboard(self, inter: disnake.ApplicationCommandInteraction):
         guild_id = inter.guild.id
-        economy = self.economy.get_guild_economy(guild_id)
+        economy = self.bot.economy.get_guild_economy(guild_id)
 
         user_balances = {
             user_id: balance

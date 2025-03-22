@@ -1,11 +1,9 @@
 import disnake
 from disnake.ext import commands
-from .economy import Economy
 
 class BalanceCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.economy = Economy()
 
     @commands.slash_command(name="balance", description="Check your or another user's balance.")
     async def balance(
@@ -16,7 +14,7 @@ class BalanceCog(commands.Cog):
         """Check a user's balance."""
         guild_id = inter.guild.id
         target_user = user or inter.author
-        balance = self.economy.get_user_balance(guild_id, target_user.id)
+        balance = self.bot.economy.get_user_balance(guild_id, target_user.id)
 
         embed = disnake.Embed(
             title="💰 Balance",
