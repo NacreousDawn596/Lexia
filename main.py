@@ -43,6 +43,9 @@ async def on_ready():
         # ],
         "economy": [
             "balance", "daily", "leaderboard", "message_listener", "gambling", "pay"
+        ],
+        "moderation": [
+            "ban", "clear", "kick", "mute", "clone"
         ]
     }
     
