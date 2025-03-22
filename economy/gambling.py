@@ -136,7 +136,7 @@ class Gambling(commands.Cog):
                 ephemeral=True
             )
 
-        session = GameSession(inter.author, game, bet, self.bot.economy)
+        session = GameSession(inter.author, game, bet)
         self.bot.economy.add_coins_to_user(inter.guild_id, inter.author.id, -bet)
         
         embed = disnake.Embed(
