@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexia Bot - Your Ultimate Discord Companion</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        :root {
+            --primary-color: #FF6B6B; /* Pink */
+            --secondary-color: #A55EEA; /* Purple */
+        }
+        
+        body {
+            background: #1a1a1a;
+            color: #ffffff;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-section {
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            padding: 100px 0;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+        }
+
+        .bot-icon {
+            width: 200px;
+            border-radius: 50%;
+            border: 5px solid white;
+            transition: transform 0.3s ease;
+        }
+
+        .bot-icon:hover {
+            transform: rotate(15deg);
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .card-body > * {
+            color: #ccc;
+        }
+
+        .mt-2 > strong {
+            color: rgb(114, 62, 114);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .command-card {
+            background: #2b2b2b;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #FF4C4C; /* Darker Pink */
+            border-color: #FF4C4C;
+        }
+
+        .btn-outline-light {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline-light:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .accordion-button {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .accordion-button:not(.collapsed) {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .badge.bg-primary {
+            background-color: var(--primary-color) !important;
+        }
+
+        .card.bg-black {
+            background-color: #2b2b2b !important;
+        }
+
+        .text-warning {
+            color: var(--primary-color) !important;
+        }
+
+        .text-success {
+            color: var(--secondary-color) !important;
+        }
+
+        .text-muted {
+            color: #ccc !important;
+        }
+
+        .text-danger {
+            color: #FF6B6B !important;
+        }
+
+        .bg-dark {
+            background-color: #1a1a1a !important;
+        }
+
+        .bg-black {
+            background-color: #000000 !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg fixed-top">
+            <div class="container">
+                <a class="navbar-brand text-white fw-bold" href="#">Lexia Bot</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#commands">Commands</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#support">Support</a></li>
+                        <li class="nav-item">
+                            <a href="https://discord.com/oauth2/authorize?client_id=1239202410971529266" 
+                               class="btn btn-primary ms-2" target="_blank">Invite Lexia</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container text-center">
+                <img src="./icon.png" alt="Lexia Bot" class="bot-icon mb-4">
+                <h1 class="display-4 fw-bold mb-3">Lexia Bot</h1>
+                <p class="lead mb-4">Your all-in-one Discord companion for fun, moderation, and community management</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="#commands" class="btn btn-light btn-lg">Explore Commands</a>
+                    <a href="https://discord.com/oauth2/authorize?client_id=1239202410971529266" 
+                       class="btn btn-outline-light btn-lg" target="_blank">Add to Server</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="py-5">
+            <div class="container">
+                <h2 class="text-center mb-5">🌟 Key Features</h2>
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-3" v-for="feature in features">
+                        <div class="feature-card p-4 h-100">
+                            <h5 class="mb-3">{{ feature.title }}</h5>
+                            <p class="text-muted">{{ feature.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         
+        </section>
+
+        <!-- Commands Wiki -->
+        <section id="commands" class="py-5">
+            <div class="container">
+                <h2 class="text-center mb-5">📚 Command Encyclopedia</h2>
+                
+                <!-- Command Categories Accordion -->
+                <div class="accordion" id="commandsAccordion">
+                    <div class="accordion-item" v-for="(category, index) in commandCategories" :key="index">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" :data-bs-target="'#category' + index" 
+                                    data-bs-toggle="collapse" :aria-expanded="index === 0 ? 'true' : 'false'">
+                                <i :class="category.icon + ' me-2'"></i> {{ category.name }}
+                            </button>
+                        </h2>
+                        <div :id="'category' + index" class="accordion-collapse collapse" 
+                             :class="index === 0 ? 'show' : ''" data-bs-parent="#commandsAccordion">
+                            <div class="accordion-body">
+                                <div class="row g-4">
+                                    <div class="col-12" v-for="(cmd, cmdIndex) in category.commands" :key="cmdIndex">
+                                        <div class="command-card p-4">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <h5 class="mb-0">
+                                                    <code>{{ cmd.syntax }}</code>
+                                                </h5>
+                                                <span class="badge bg-primary">{{ cmd.type }}</span>
+                                            </div>
+                                            <p class="text-muted">{{ cmd.description }}</p>
+                                            <div v-if="cmd.example" class="mt-2">
+                                                <strong>Example:</strong>
+                                                <code class="d-block mt-1 p-2 bg-dark rounded">{{ cmd.example }}</code>
+                                            </div>
+                                            <div v-if="cmd.notes" class="mt-2 text-warning">
+                                                <small>{{ cmd.notes }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Support Section -->
+        <section id="support" class="py-5 bg-dark">
+            <div class="container text-center">
+                <h2 class="mb-4">❓ Need Help?</h2>
+                <p class="lead mb-4">We're here to support you 24/7!</p>
+                <div class="row g-4 justify-content-center">
+                    <div class="col-md-6">
+                        <div class="card h-100 bg-black">
+                            <div class="card-body">
+                                <i class="fas fa-bug fa-3x text-danger mb-3"></i>
+                                <h5>Report Issues</h5>
+                                <p>Found a bug? Let us know through GitHub Issues</p>
+                                <a href="https://github.com/Nacreousdawn596/Lexia/issues" 
+                                   class="btn btn-outline-danger">GitHub Issues</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100 bg-black">
+                            <div class="card-body">
+                                <i class="fas fa-comments fa-3x text-success mb-3"></i>
+                                <h5>Live Support</h5>
+                                <p>Join our Discord server for real-time assistance</p>
+                                <a href="https://discord.gg/fuQgEpDdyF" 
+                                   class="btn btn-outline-success">Join Support Server</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-black text-center py-4">
+            <p class="mb-0 text-muted">&copy; 2025 Lexia Bot. All rights reserved. 
+                <span class="d-block mt-2">Made with ❤️ by NacreousDawn596</span>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        const { createApp } = Vue
+    
+        createApp({
+            data() {
+                return {
+                    features: [
+                        { title: 'Powerful Moderation', description: 'Keep your server safe with automated moderation tools' },
+                        { title: 'Engaging Economy', description: 'Fun currency system with games and rewards' },
+                        { title: 'AI Integration', description: 'GPT-powered chat and image generation' },
+                        { title: 'Easy Setup', description: 'Get started in minutes with intuitive commands' }
+                    ],
+                    commandCategories: [
+                        {
+                            name: 'Fun Commands',
+                            icon: 'fas fa-gamepad',
+                            commands: [
+                                {
+                                    syntax: '/joke or l!joke',
+                                    description: 'Get a random joke to lighten the mood',
+                                    example: '/joke',
+                                    type: 'Entertainment',
+                                    notes: 'Updated daily with fresh content'
+                                },
+                                {
+                                    syntax: '/cat or l!cat',
+                                    description: 'Fetch random cat images from various sources',
+                                    example: '/cat',
+                                    type: 'Media',
+                                    notes: 'Supports different breeds'
+                                },
+                                {
+                                    syntax: '/coinflip or l!coinflip',
+                                    description: 'Virtual coin flipping simulation',
+                                    example: '/coinflip',
+                                    type: 'Game',
+                                    notes: 'Heads or Tails results'
+                                },
+                                {
+                                    syntax: '/dice or l!dice',
+                                    description: 'Roll a 6-sided die with random outcomes',
+                                    example: '/dice',
+                                    type: 'Game',
+                                    notes: 'Supports multiple dice'
+                                },
+                                {
+                                    syntax: '/cups',
+                                    description: 'Play the classic shell game with prizes',
+                                    example: '/cups play --bet 100',
+                                    type: 'Economy Game',
+                                    notes: 'Requires economy system setup'
+                                },
+                                {
+                                    syntax: '/match',
+                                    description: 'Calculate compatibility between two users',
+                                    example: '/match @User1 @User2',
+                                    type: 'Social',
+                                    notes: 'Just for fun!'
+                                }
+                            ]
+                        },
+                        {
+                            name: 'Economy Commands',
+                            icon: 'fas fa-coins',
+                            commands: [
+                                {
+                                    syntax: '/balance',
+                                    description: 'Check your or another user\'s wallet balance',
+                                    example: '/balance @User',
+                                    type: 'Finance',
+                                    notes: 'Daily earning cap applies'
+                                },
+                                {
+                                    syntax: '/daily',
+                                    description: 'Claim daily currency rewards',
+                                    example: '/daily',
+                                    type: 'Reward',
+                                    notes: '24h cooldown'
+                                },
+                                {
+                                    syntax: '/pay',
+                                    description: 'Transfer currency to another user',
+                                    example: '/pay @User 500',
+                                    type: 'Transaction',
+                                    notes: '2% transaction tax'
+                                },
+                                {
+                                    syntax: '/leaderboard',
+                                    description: 'Display server\'s wealth ranking',
+                                    example: '/leaderboard',
+                                    type: 'Statistics',
+                                    notes: 'Updates in real-time'
+                                },
+                                {
+                                    syntax: '/gamble',
+                                    description: 'Play casino-style games',
+                                    example: '/gamble blackjack 500',
+                                    type: 'Game',
+                                    notes: 'Supports poker/blackjack'
+                                }
+                            ]
+                        },
+                        {
+                            name: 'Moderation Commands',
+                            icon: 'fas fa-shield-alt',
+                            commands: [
+                                {
+                                    syntax: '/kick',
+                                    description: 'Remove a user from the server',
+                                    example: '/kick @User --reason "Spamming"',
+                                    type: 'Moderation',
+                                    notes: 'Requires Kick Members permission'
+                                },
+                                {
+                                    syntax: '/ban',
+                                    description: 'Permanently ban a user',
+                                    example: '/ban @User --reason "NSFW content"',
+                                    type: 'Moderation',
+                                    notes: 'IP tracking prevention'
+                                },
+                                {
+                                    syntax: '/mute',
+                                    description: 'Temporarily mute a user',
+                                    example: '/mute @User 6h',
+                                    type: 'Timeout',
+                                    notes: 'Max duration: 1 week'
+                                },
+                                {
+                                    syntax: '/clone',
+                                    description: 'Duplicate server structure',
+                                    example: '/clone 901850673812111370',
+                                    type: 'Administration',
+                                    notes: 'Requires Manage Server permission'
+                                },
+                                {
+                                    syntax: '/clear',
+                                    description: 'Bulk delete messages',
+                                    example: '/clear 100',
+                                    type: 'Moderation',
+                                    notes: 'Max 1000 messages'
+                                }
+                            ]
+                        },
+                        {
+                            name: 'AI Commands',
+                            icon: 'fas fa-robot',
+                            commands: [
+                                {
+                                    syntax: '/textgen or l!textgen',
+                                    description: 'AI-powered conversation',
+                                    example: '/textgen "Explain quantum computing"',
+                                    type: 'AI Chat',
+                                    notes: 'GPT-4 powered'
+                                },
+                                {
+                                    syntax: '/imagegen or l!imagegen',
+                                    description: 'Generate images from text prompts',
+                                    example: '/imagegen "cyberpunk cat in neon city"',
+                                    type: 'AI Art',
+                                    notes: 'DALL-E integration'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }).mount('#app')
+    </script>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
+</body>
+</html>

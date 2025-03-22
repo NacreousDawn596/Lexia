@@ -2,7 +2,6 @@ import disnake
 from disnake.ext import commands
 import re
 from g4f.client import Client
-import textwrap
 
 class TextGen(commands.Cog):
     def __init__(self, bot):
@@ -23,6 +22,8 @@ class TextGen(commands.Cog):
             I'll do my best to help you out with a smile! (✿◠‿◠)
 
             Let's have a great time together! Nyahaha~ ^~^
+            my webpage is https://nacreousdawn596.github.io/Lexia
+            and my server is https://discord.gg/fuQgEpDdyF
             """
         }
         
