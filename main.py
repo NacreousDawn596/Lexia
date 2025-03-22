@@ -10,7 +10,7 @@ intents.members = True
 command_sync_flags = commands.CommandSyncFlags.default()
 command_sync_flags.sync_commands_debug = True
 
-bot = commands.Bot(command_prefix="l!", intents=intents, test_guilds=[1353007786971365407, 1349503378119462912], command_sync_flags=command_sync_flags, sync_global_commands=True, sync_on_cog_actions=True)
+bot = commands.Bot(command_prefix="l!", intents=intents, test_guilds=[1353007786971365407, 1349503378119462912], command_sync_flags=command_sync_flags)
 bot.channel_conversations = {}
 def setup_database():
     """Initialize the SQLite database for user memory."""
@@ -55,7 +55,6 @@ async def on_ready():
         for file in files[folder]:
             bot.load_extension(f"{folder}.{file}")
 
-    for guild in bot.guilds:
-        await bot.sync_commands(guild_id = guild.id)
+    # await bot.sync_application_commands()
         
 bot.run(os.environ["TOKEN"])
