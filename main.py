@@ -10,7 +10,7 @@ intents.members = True
 command_sync_flags = commands.CommandSyncFlags.default()
 command_sync_flags.sync_commands_debug = True
 
-bot = commands.Bot(command_prefix="l!", intents=intents, test_guilds=[1353007786971365407, 1349503378119462912], command_sync_flags=command_sync_flags)
+bot = commands.Bot(command_prefix="l!", intents=intents, command_sync_flags=command_sync_flags)
 bot.channel_conversations = {}
 def setup_database():
     """Initialize the SQLite database for user memory."""
