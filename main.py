@@ -10,7 +10,7 @@ intents.members = True
 command_sync_flags = commands.CommandSyncFlags.default()
 command_sync_flags.sync_commands_debug = True
 
-bot = commands.Bot(command_prefix="l!", intents=intents, command_sync_flags=command_sync_flags)
+bot = commands.Bot(command_prefix="l!", intents=intents)
 bot.channel_conversations = {}
 def setup_database():
     """Initialize the SQLite database for user memory."""
@@ -55,6 +55,6 @@ async def on_ready():
         for file in files[folder]:
             bot.load_extension(f"{folder}.{file}")
 
-    await bot._sync_application_commands()
+    # await bot._sync_application_commands()
         
 bot.run(os.environ["TOKEN"])
